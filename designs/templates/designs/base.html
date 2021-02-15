@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Techup</title>
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'designs/img/' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'designs/css/sb-admin-2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'designs/css/dropzone.css' %}">
+    <link rel="stylesheet" href="{% static 'designs/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'designs/vendor/fontawesome-free/css/all.min.css' %}">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Gothic+A1|Helvetica|sans-serif" rel="stylesheet">
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/start/jquery-ui.css"rel="stylesheet" />
+    
+    {% block links %}
+    {% endblock %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145751270-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-145751270-2');
+    </script>
+    <script type="text/javascript">
+        window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
+
+          heap.load("2262313048");
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+        <a class="navbar-brand" href="{% url 'dashboard:homepage' %}">
+            
+            <div class="log-image">
+                <img src="{% static 'designs/img/logo.png' %}" />
+            </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarToggler">
+            
+            
+            <ul class="navbar-nav ml-auto mt-2 mt-lg-0 profile-toolbar">
+                {% if user.is_authenticated %}               
+                <li class="nav-item">
+                    <!--<a class="nav-link dropdown-toggle profile" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        
+                        {% if request.user.profile.avatar %}
+                            <img class="profile-image" src="{{ request.user.profile.avatar.url }}" />
+                        {% else %}
+                            <span class="profile-image" ></span>
+                        {% endif %}
+                        <span class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+                    </a>-->
+                    
+                    <a class="" href="{% url 'dashboard:logout' %}">ログアウト</a>
+                   
+                </li>
+                
+                {% else %}
+                <li class="nav-item {% if '/' in request.path or '/signup' in request.path %}active{% endif %}"  >
+                    <a class="nav-link" href="{% url 'dashboard:login' %}?next={{ request.path }}"><i class="fa fa-sign-in"></i> &nbsp;ログイン<span class="sr-only">(current)</span></a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    {% if messages %}
+    <div class="container messages justify-content-center">
+        {% for message in messages %}
+            {% if message.tags == "error" %}
+            <div class="m-3 alert alert-danger alert-dismissible text-center" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error{% else %}{{ message.tags|title }}{% endif %}!</strong> {{ message }}
+            </div>
+            {% else %}
+            <div class="m-3 alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error{% else %}{{ message.tags|title }}{% endif %}!</strong> {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}
+        
+    <div id="snackbar"></div>
+    {% endblock content %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    {% block scripts %}
+    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.2.2/dist/latest/bootstrap-autocomplete.min.js"></script>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function() {
+          'use strict';
+          window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+              form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+              }, false);
+            });
+          }, false);
+        })();
+
+    </script>
+    <script src="{% static 'designs/js/dropzone.js' %}"></script>
+    <script type="text/javascript">
+    function showToast(text, color) {
+        if (color === "red") {
+            color = "#dc3545";
+        } else if (color === "green") {
+            color = "#28a745";
+        }
+        // Get the snackbar DIV
+        var x = document.getElementById("snackbar");
+        // Add the "show" class to DIV
+        x.style.backgroundColor = color;
+        x.innerText = text;
+        x.className = "show";
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+
+       
+    </script>
+    {% endblock %}
+    {% block extra_js %}
+    {% endblock %}
+    {% csrf_token %}
+    <script>
+        $('document').ready(function(){
+
+            let csrftoken = $("[name=csrfmiddlewaretoken]").val();
+            console.log(csrftoken)
+            
+        });
+    </script>
+
+<footer>
+    <div class="row footer">
+        <div class="col-md-8 footer-content-center">
+            <div class="row">
+            <div class="col-md-6 left">
+                <p>企業紹介</p>
+            </div>
+            <div class="col-md-6 right">
+                <p>お問い合わせ</p>
+            </div>
+            </div>
+            </br>
+            <p>Copyright Techup©  2021</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

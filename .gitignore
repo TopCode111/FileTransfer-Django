@@ -1,0 +1,8 @@
+*.sqlite3
+venv
+media
+*.zip
+*.db
+*_assets
+__pycache__/
+*.pyc

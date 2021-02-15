@@ -1,0 +1,123 @@
+{% extends 'designs/base.html' %}
+{% block content %}
+{% load static %}
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    </br>
+    </br>
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:homepage' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'dashboard:userreject' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>ユーザー登録拒否</span></a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:volumn' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>容量管理</span></a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+    </ul>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Content Row -->
+                <div class="row">
+                    <div class=" col-xl-7 col-lg-7">
+                        <div class="card shadow">
+                        <table >
+                            <thead class="card-header py-3">
+                                <th>No</th>
+                                <th>メールアドレス</th>
+                                <th>デート</th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                {% for reject in RejectUser %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ reject.email }}</td>
+                                    <td>{{ reject.applied }}</td>
+                                    <td style="text-align: right;"><button type="submit" data-id="{{ reject.id }}" class="btn btn-primary reuser_delete"><span class="icon text-blue-50"><i class="fa fa-remove"></i></span></button></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <div class=" col-xl-5 col-lg-5">
+                        <div class="card shadow">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1 class="h4 text-gray-900 mb-2">登録拒否ユーザー追加</h1>
+                                </div>
+                                <form class="user" action="{% url 'dashboard:add_userreject' %}" method="POST">
+                                    <div class="form-group">
+                                        {% csrf_token %}
+                                        <input type="email" name="email" class="form-control form-control-user" placeholder="メールアドレス">
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <input class="btn btn-primary" type="submit" value="追加" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block scripts %}
+<script>
+    $(document).ready(function(){
+        var csrftoken = "{{ csrf_token }}";
+       
+        $('body').on('click', '.reuser_delete', function(){
+            var r = confirm("本当に削除しますか？");
+            if(r == true){
+                var $this = $(this);
+                var id = $(this).data('id');
+                $.ajax({
+                    url: "{% url 'dashboard:delete_userreject' %}",
+                    type:'POST',
+                    data:{
+                        id:id,                    
+                        csrfmiddlewaretoken:csrftoken
+                    },
+                    success: function (data) {
+                                        
+                        $this.closest('tr').remove();
+                        //alert("成功しました。"); 
+                    }
+                })
+            }
+            else{
+                showToast("いいえ。","red");
+            }
+        })
+        
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,334 @@
+{% extends 'designs/base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+<style type="text/css">
+  .image-panel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .image-panel .user-image{
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    box-shadow: 0px 0px 5px 0px #aba4a4;
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+  .image-panel .user-image img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .mobile{
+    display: none;
+  }
+  .profile_form_panel {
+    padding-top: 3rem;
+  }
+  
+  .input-padding-left{
+    padding-left: .75rem;
+  }
+  .form-group {
+    margin-bottom: 0;
+  }
+  .form-control {
+    height: 26px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  @media only screen and (max-width: 991px){
+    .image-panel{
+    }
+    .mobile{
+      display: block;
+      padding-top: 1rem;
+    }
+    .not-mobile{
+      display: none
+    }
+    .profile_form_panel {
+      padding-top: 2rem;
+    }
+  }
+  @media only screen and (max-width: 767px){
+    .name-email-column{
+      order: 3;
+      margin-bottom: 30px;
+    }
+    .team-column{
+      order: 2;
+      display: flex;
+      align-items: center;
+    }
+    .team-column label{
+      margin-bottom: 0;
+    }
+    .team-column h4{
+      margin-left: 20px
+    }
+    .image-column{
+      order: 1;
+      margin-top: 10px;
+    }
+  }
+</style>
+<div id="content" class="row container-fluid bg-gallery">  
+  <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 my-3 justify-content-center profile_form_panel bg-white">    
+    <h3 class="mb-4 text-bold text-firefly">Hi {{ request.user.first_name }}!</h3>
+    <h4 class="text-bold text-uppercase text-subtitle">User Information</h4>
+    <div class="row">
+      <div class="col-md-5 name-email-column">
+          <label class="col-form-label">Name</label>
+          <div class="form-row">
+              <div class="col-md-6">
+                  <form id="div_id_first_name" class="form-group editable-input-panel">
+                      {% csrf_token %}
+                      <div class="text-visual-edit">
+                        <span class="text-space-normal input-padding-left input-value-visual">{{ request.user.first_name }}</span>
+                        <span class="edit"><i class="fa fa-pencil"></i></span>
+                      </div>
+                      <input type="text" name="first_name" value="{{ request.user.first_name }}" class="textinput textInput form-control" required="" id="id_first_name">
+                  </form>
+              </div>
+              <div class="col-md-6">
+                  <form id="div_id_last_name" class="form-group editable-input-panel">
+                      {% csrf_token %}
+                      <div class="text-visual-edit">
+                        <span class="text-space-normal input-padding-left input-value-visual">{{ request.user.last_name }}</span>
+                        <span class="edit"><i class="fa fa-pencil"></i></span>
+                      </div>
+                      <input type="text" name="last_name" value="{{ request.user.last_name }}" class="textinput textInput form-control" required="" id="id_last_name">
+                  </form>
+              </div>
+          </div>
+          <label class="col-form-label">E-mail</label>
+          <div class="form-row">
+              <div class="col-md-12">
+
+                  <form id="div_id_email" class="form-group mb-0 editable-input-panel">
+                        {% csrf_token %}
+                      <div class="text-visual-edit">
+                        <span class="text-space-normal input-padding-left text-word-break input-value-visual">{{ request.user.email }}</span>
+                        <span class="edit"><i class="fa fa-pencil"></i></span>
+                      </div>
+                      <input type="email" name="email" value="{{ request.user.email }}" class="emailinput form-control" required="" id="id_email">
+
+                  </form>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-3 team-column">
+        <label>Team</label>
+        <p class="text-bold text-plain-scorpion">{{ request.user.profile.team.team_name }}</p>
+      </div>
+      <div class="col-md-4 image-column">        
+        <div class="image-panel">
+          <div class="user-image">
+            {% load static %}
+            <img src="{% if request.user.profile.avatar %}{{request.user.profile.avatar.url }}{% else %}{% static 'designs/img/man.png' %}{% endif %}" id="avatar_preview">
+          </div>
+          <div class="d-flex">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <input type="file" name="user_avatar" id="user_avatar" class="sr-only" accept="image/*">
+              <label  for="user_avatar" style="cursor: pointer; color: #3CC59F;">Change Profile Picture</label>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h4 class="text-bold text-uppercase text-subtitle">Password</h4>
+    <div class="row">
+      <div class="col-md-12">
+        <form method="post">
+          {% csrf_token %}
+
+          {#{{ pw_form|crispy }}#}
+          <div class="form-row">
+            <div class="form-group col-md-6 mb-0">
+              {{ pw_form.old_password|as_crispy_field }}
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6 mb-0">
+              {{ pw_form.new_password1|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-6 mb-0">
+              {{ pw_form.new_password2|as_crispy_field }}
+            </div>
+          </div>
+          
+          <button class="btn btn-scalero" name="pw_form" value="change_password" type="submit" style="width: 200px;">Update Password</button>
+        </form>
+      </div>
+    </div>
+    <br>
+    <h4 class="text-bold text-uppercase text-subtitle my-3">Notifications</h4>
+    <div class="form-group"> 
+      <div id="div_id_app_notification" class="form-check mb-2"> 
+        <label for="app_notifications" class="form-check-label d-flex"> 
+          <input type="checkbox" name="app_notifications" class="scalero-checkbox checkboxinput form-check-input" id="app_notifications" {% if request.user.profile.app_notification %}checked{% endif %}>
+          <span class="visual-checkbox"><i class="fa fa-check" aria-hidden="true"></i></span>
+          <span class="text-nobel ml-2">App Notifications</span>
+        </label> 
+      </div> 
+
+      <div id="div_id_email_notifications" class="form-check"> 
+        <label for="email_notifications" class="form-check-label d-flex"> 
+          <input type="checkbox" name="email_notifications" class="scalero-checkbox checkboxinput form-check-input" id="email_notifications" {% if request.user.profile.email_notification %}checked{% endif %}>
+          <span class="visual-checkbox"><i class="fa fa-check" aria-hidden="true"></i></span>
+          <span class="text-nobel ml-2">Email Notifications</span>
+        </label> 
+      </div> 
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript">
+  function addImage(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      
+      reader.onload = function(e) {
+        $('#avatar_preview').attr('src', e.target.result);
+      }
+      
+      reader.readAsDataURL(input.files[0]); // convert to base64 string
+    }
+  }
+
+  function removeImage(){
+    document.getElementById("user_avatar").value = '';
+    $('#avatar_preview').attr('src', '/static/designs/img/man.png');
+
+  }
+
+  if(document.getElementById("user_avatar")) {
+    document.getElementById("user_avatar").addEventListener('change',function() {
+        console.log('HERE');
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        var formData = new FormData();
+        formData.append('user_avatar', this.files[0]);
+        formData.append('csrfmiddlewaretoken', csrftoken);
+        var $this = this;
+        $.ajax({
+            url: '{% url 'dashboard:update_user_photo' %}',  //Server script to process data
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                if(data.success){
+                    addImage($this)
+                }
+
+            }
+        });
+{#      addImage(this);#}
+    },false);
+  }
+
+  if(document.getElementById("remove_image")) {
+    document.getElementById("remove_image").addEventListener('click',function() {
+      removeImage();
+    },false);
+  }
+  function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+  window.addEventListener('load',function(){
+    $('body').on('click','.editable-input-panel .edit', function(){
+      $(this).closest('.editable-input-panel').addClass('active');
+    });
+    $('body').on('blur','.editable-input-panel input', function(){
+      $(this).closest('.editable-input-panel').removeClass('active')
+    });
+
+   $('body').on('keyup','#id_first_name',function(){
+        $.post("{% url 'dashboard:update_user_firstname' %}", $('#div_id_first_name').serialize(), function (data) {
+          if(!data.success){
+            alert(data.errors['title'][0])
+          }else{
+            $('#div_id_first_name').find('span.input-value-visual').html($('#id_first_name').val());
+          }
+        });
+   });
+   $('body').on('keyup','#id_last_name',function(){
+
+       $.post("{% url 'dashboard:update_user_lastname' %}", $('#div_id_last_name').serialize(), function (data) {
+          if(!data.success){
+            alert(data.errors['title'][0])
+          }else{
+            $('#div_id_last_name').find('span.input-value-visual').html($('#id_last_name').val());
+          }
+        });
+
+   });
+   $('body').on('keyup','#id_email',function(){
+        var value = $(this).val()
+        if(validateEmail(value)){
+           $.post("{% url 'dashboard:update_user_email' %}", $('#div_id_email').serialize(), function (data) {
+              if(!data.success){
+                alert('Email already exists');
+              }else{
+                $('#div_id_email').find('span.input-value-visual').html($('#id_email').val());
+              }
+            });
+        }else{
+            console.log('no email')
+        }
+
+   });
+
+   $('body').on('change','#app_notifications',function(){
+       var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+       value = 0
+       if($(this).prop('checked')){
+           value=1
+       }else{
+           value=0
+       }
+       $.ajax({
+           url :'{% url 'dashboard:update_user_app_notification' %}',
+           type:'Post',
+           data:{
+               csrfmiddlewaretoken:csrftoken,
+               value:value
+           },
+           success:function(data){
+               console.log(data)
+           }
+       })
+   });
+
+     $('body').on('change','#email_notifications',function(){
+       var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+       value = 0
+       if($(this).prop('checked')){
+           value=1
+       }else{
+           value=0
+       }
+       $.ajax({
+           url :'{% url 'dashboard:update_user_email_notification' %}',
+           type:'Post',
+           data:{
+               csrfmiddlewaretoken:csrftoken,
+               value:value
+           },
+           success:function(data){
+               console.log(data)
+           }
+       })
+   });
+
+  });
+
+
+</script>
+{% endblock content %}

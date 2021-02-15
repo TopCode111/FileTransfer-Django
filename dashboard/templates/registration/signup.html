@@ -1,0 +1,125 @@
+{% extends 'designs/base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+<style type="text/css">
+  .not-mobile h2,.mobile h2{
+      text-align: center;
+      color: #4e73df;
+    }
+  .image-panel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem 0 2rem 5rem;
+    padding-top: 6rem;
+  }
+  .image-panel .user-image{
+    width: 200px;
+    height: 200px;
+    border-radius: 100%;
+    box-shadow: 0px 0px 5px 0px #aba4a4;
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+  .image-panel .user-image img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .mobile{
+    display: none;
+  }
+  .profile_form_panel {
+    padding-top: 3rem;
+  }
+  
+  @media only screen and (max-width: 991px){
+    .image-panel{
+      margin: 0;
+      padding-top: 1rem;
+    }
+    .mobile{
+      display: block;
+      min-width: 100%;
+      margin: 0;
+    }
+    .not-mobile{
+      display: none;
+    }
+    .profile_form_panel {
+      padding-top: 1rem;
+    }
+  }
+</style>
+<div id="content" class="container-fluid">
+  <div class="row flex-1">
+    <div class="col-md-4" style="margin: 0 auto;">
+      <div class="row">
+    <div class="col-md-4 offset-md-1 justify-content-center pt-3 mobile">
+      <h2>アカウントを作成</h2>
+      <br />
+    </div>
+    <!--<div class="col-lg-3 image-panel">
+      
+      <div class="user-image">
+        {% load static %}
+        <img src="{% static 'designs/img/man.png' %}" id="avatar_preview">
+      </div>
+      <div class="d-flex">
+        <label class="btn btn-primary btn-sm mr-2 mb-0" for="user_avatar" style="cursor: pointer;">追加</label>
+        <a href="javascript:;" class="btn btn-danger btn-sm" id="remove_image">削除</a>
+      </div>
+
+    </div>-->
+    <div class="col-md-12 justify-content-center profile_form_panel">
+        <div class="not-mobile">
+          <h2>アカウントを作成</h2>
+          <br />
+          <br />
+          
+        </div>
+        <form method="post" enctype="multipart/form-data">
+          <input type="file" name="user_avatar" id="user_avatar" class="sr-only" accept="image/*">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <button class="btn btn-primary btn-user btn-block" type="submit">新規登録</button>
+        </form>
+        <div class="alert alert-info" role="alert">
+          すでにアカウントをお持ちですか？ <a href="{% url 'dashboard:homepage' %}">ログイン</a>
+        </div>
+    </div>
+  </div>
+  </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  function addImage(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      
+      reader.onload = function(e) {
+        $('#avatar_preview').attr('src', e.target.result);
+      }
+      
+      reader.readAsDataURL(input.files[0]); // convert to base64 string
+    }
+  }
+
+  function removeImage(){
+    document.getElementById("user_avatar").value = '';
+    $('#avatar_preview').attr('src', '/static/designs/img/man.png');
+
+  }
+
+  document.getElementById("user_avatar").addEventListener('change',function() {
+    addImage(this);
+  },false);
+
+  document.getElementById("remove_image").addEventListener('click',function() {
+    removeImage();
+  },false);
+</script>
+{% endblock content %}

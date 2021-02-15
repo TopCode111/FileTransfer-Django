@@ -1,0 +1,451 @@
+{% extends 'designs/base.html' %}
+
+{% block links %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
+{% endblock %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+    
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        {% if user.is_superuser %}
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        </br>
+        </br>
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'dashboard:homepage' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard:userreject' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>ユーザー登録拒否</span></a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard:volumn' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>容量管理</span></a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+        </ul>
+        {% else %}
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        </br>
+        </br>
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'dashboard:homepage' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>ファイル管理</span></a>
+            </li>            
+        </ul>
+        <!-- End of Sidebar -->
+        {% endif %}
+        <!-- Content Wrapper -->
+        {% if user.is_superuser %}
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Earnings (Monthly)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Earnings (Annual)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Requests Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Pending Requests</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Row -->
+                    <div class="row">
+                        <!-- Area Chart -->
+                        <div class="col-xl-8 col-lg-7">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                                    
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="myAreaChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pie Chart -->
+                        <div class="col-xl-4 col-lg-5">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
+                                    
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4 pb-2">
+                                        <canvas id="myPieChart"></canvas>
+                                    </div>
+                                    <div class="mt-4 text-center small">
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-primary"></i> Direct
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-success"></i> Social
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-info"></i> Referral
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Content Row -->
+                    <div class="row">
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Earnings (Monthly)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Earnings (Annual)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Requests Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Pending Requests</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!--UPLOAD Pannel-->
+                        <div class="col-xl-6 col-lg-6">
+                            <div class="card">
+                                <div class="card-body" id="uploadForm">
+                                    <h5 class="card-title">アップロード</h5>
+                                    <form action="" class="dropzone form-group" id="my-awesome-dropzone">
+                                        {% csrf_token %}
+                                        <div class="drform-group dz-message">
+                                            <br>
+                                            <b>ここにファイルをドラッグ&ドロップしてください。</b>
+                                            <br>
+                                            
+                                        </div>
+                                    </form>
+                                    
+                                    <button type="submit" id="submit" disabled="true" class="btn btn-primary">アップロード</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!--END Pannel-->
+                        <!--Preview Pannel-->
+                        <div class="col-xl-6 col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>最近アップロードされたファイル</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <!--END pannel-->
+                    </div>           
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <!-- Content Wrapper End -->
+    </div>
+
+{% else %} 
+
+{% load crispy_forms_tags %}
+    <div id="content" class="container-fluid auth-wrapper full-height">
+        <div class="row flex-1">        
+        <div class="col-lg-4 col-md-12 justify-content-center auth-panel">
+            {% load static %}            
+                       
+            <form method="post" class="user">
+                {% csrf_token %}
+                {{ form|crispy }}                
+                <div class="">
+                    <button class="btn btn-primary btn-user btn-block" type="submit">ログインする</button>
+                </div>
+                <div class="form-group resetpw">
+                    <a href="{% url 'dashboard:password_reset' %}">パスワードをお忘れですか？</a>
+                </div>
+            </form>
+            <div>アカウントをお持ちでないんですか?<a href="{% url 'dashboard:signup' %}?{{ request.GET.urlencode }}">新規登録</a> </div>            
+        </div>
+        </div>
+    </div>    
+{% endif %}
+{% endblock content %}
+{% block scripts %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.20/sorting/datetime-moment.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function() {
+      'use strict';
+      window.addEventListener('load', function() {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
+
+</script>
+<script src="{% static 'designs/js/dropzone.js' %}"></script>
+<script>
+    var currentFile = null;
+    Dropzone.options.myAwesomeDropzone = {
+        // Prevents Dropzone from uploading dropped files immediately
+        autoProcessQueue : false,
+        addRemoveLinks: true,
+        uploadMultiple: true,
+        maxFiles: 10,
+        parallelUploads: 10,
+        acceptedFiles: "image/*",
+        paramName: "asset",
+        init : function() {
+            var submitButton = document.querySelector("#submit")
+            myDropzone = this;
+
+            submitButton.addEventListener("click", function() {
+                if (!$("input#design-title").val()) {
+                        showToast("Please enter a valid title.", "red")
+                        return;
+                    }
+                    
+                    console.log($("input[name='team_select']").val());
+                    if (!$("input[name='team_select']").val()) {
+                        showToast("Please select a valid team.", "red")
+                        return;
+                    }
+                              
+                myDropzone.processQueue();
+                // Tell Dropzone to process all queued files.
+            });
+
+            // You might want to show the submit button only when
+            // files are dropped here:
+            this.on("addedfile", function(file) {
+                // Show submit button here and/or inform user to click it.
+                $("#submit").prop('disabled', false);
+            });
+            this.on("error", function(file) {
+                if (!file.accepted) {
+                    this.removeFile(file);
+                    showToast("Invalid file selected. Please select a valid file", "red")
+                }
+            });
+            this.on("sending", function(file, xhr, formData) {
+                formData.append("title", $("input#design-title").val()); 
+                    
+            });
+            this.on("success", function(file, response, action) {
+                showToast("Uploaded design successfully. Redirecting...", "green")
+                response = JSON.parse(response);
+                console.log(response)
+            });
+        },
+        removedfile: function (file) {
+            file.previewElement.remove();
+            if (!this.files.length) {
+                $("#submit").prop('disabled', true);
+            }
+        }
+    };
+    $('.teamSelect').autoComplete();
+    $(document).ready(function() {
+        
+        
+    } );
+</script>
+{% endblock %}

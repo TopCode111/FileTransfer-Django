@@ -1,0 +1,42 @@
+{% extends 'designs/base.html' %}
+{% block content %}
+<style>
+    
+</style>
+{% load crispy_forms_tags %}
+<div id="content" class="container-fluid auth-wrapper full-height" style="min-height: 100vh;">
+  <div class="row flex-1">        
+  <div class="col-lg-4 col-md-12 justify-content-center auth-panel">
+      {% load static %}            
+                 
+      <form method="post" class="user">
+          {% csrf_token %}
+          {{ form|crispy }}                
+          <div class="">
+              <button class="btn btn-primary btn-user btn-block" type="submit">ログインする</button>
+          </div>
+          <div class="form-group resetpw">
+              <a href="{% url 'dashboard:password_reset' %}">パスワードをお忘れですか？</a>
+          </div>
+      </form>
+      <div>アカウントをお持ちでないんですか?<a href="{% url 'dashboard:signup' %}?{{ request.GET.urlencode }}">新規登録</a> </div>            
+  </div>
+  </div>
+</div>
+<script>
+  window.addEventListener('load',function(){
+    $('.techup-checkbox').each(function(){
+       let visual_checkbox_available = false;
+        $(this).siblings().each(function(){
+          if($(this).hasClass('visual-checkbox')){
+            visual_checkbox_available = true;
+          }
+        });
+
+        if(visual_checkbox_available == false){
+          $(this).after('<span class="visual-checkbox"><i class="fa fa-check" aria-hidden="true"></i></span>');
+        }
+    })
+  })
+</script>
+{% endblock content %}

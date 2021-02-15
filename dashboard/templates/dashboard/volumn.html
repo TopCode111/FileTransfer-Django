@@ -1,0 +1,108 @@
+{% extends 'designs/base.html' %}
+{% block content %}
+{% load static %}
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    </br>
+    </br>
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:homepage' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <li class="nav-item ">
+            <a class="nav-link" href="{% url 'dashboard:userreject' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>ユーザー登録拒否</span></a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'dashboard:volumn' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>容量管理</span></a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+    </ul>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Content Row -->
+                <div class="row">
+                    <div class=" col-xl-12 col-lg-12">
+                        <div class="card shadow">
+                        <table id="usertable">
+                            <thead class="card-header py-3">
+                                <th>No</th>
+                                <th>ールアドレス</th>
+                                <th>サイズ(byte)</th>
+                                <th style="text-align: right;">変更</th>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td><input type="number" class="filesize" value="{{ user.profile.file_size }}"></td>
+                                    <td style="text-align: right;"><button class="btn btn-primary updatefilesize" type="submit"><span class="icon text-blue-50"><i class="fa fa-edit"></i></span></button></td>
+                                    <input type="hidden" class='profile_id' value="{{ user.profile.id }}">
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block scripts %}
+    <script>
+        $(document).ready(function(){
+            $('#usertable').on('click','.updatefilesize',function(){
+                var currentRow = $(this).closest("tr");
+                var profile_id = currentRow.find(".profile_id").val();
+                var file_size = currentRow.find(".filesize").val();
+                
+                var csrftoken = "{{ csrf_token }}";
+                var r = confirm("ファイルサイズを変更しますか？");
+                if(r == true){
+                    console.log(profile_id,file_size);
+                    $.ajax({
+                        url: '{% url 'dashboard:save_filesizeupdate' %}',
+                        type:'POST',
+                        data:{
+                            profile_id:profile_id,
+                            file_size:file_size,
+                            csrfmiddlewaretoken:csrftoken
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            showToast("変更に成功しました。","green");
+                        }
+                    })
+                }else{
+                    showToast("変更をキャンセルしました。","red");
+                }
+            })
+        })
+    </script>
+    
+{% endblock %}
