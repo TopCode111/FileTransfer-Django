@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Project
+from .models import Project,RejectUser
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.forms import formset_factory
 from django.urls import reverse_lazy
@@ -27,8 +27,12 @@ class UserCreateForm(UserCreationForm):
     def clean(self):
         super(UserCreateForm, self).clean()
         try:
-            user = User.objects.get(email=self.cleaned_data['email'])
-            raise forms.ValidationError("A user with this E-mail address already exists.")
+            try:
+                user = RejectUser.objects.get(email=self.cleaned_data['email'])
+                raise forms.ValidationError("A user with this E-mail address already was added in rejectuser.")
+            except RejectUser.DoesNotExist:
+                user = User.objects.get(email=self.cleaned_data['email'])
+                raise forms.ValidationError("A user with this E-mail address already exists.")
         except User.DoesNotExist:
             pass
 
