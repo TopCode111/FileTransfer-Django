@@ -15,6 +15,7 @@
         </br>
         </br>
             <!-- Nav Item - Dashboard -->
+            <h2>テックアップ</h2>
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'dashboard:homepage' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -46,6 +47,7 @@
         </br>
         </br>
             <!-- Nav Item - Dashboard -->
+            <h4 class="company-title">テックアップ</h4>
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'dashboard:homepage' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -303,8 +305,9 @@
                                             <br>
                                             <b>ここにファイルをドラッグ&ドロップしてください。</b>
                                             <br>
-                                            
-                                        </div>
+                                            <small>ファイルアップロード容量は{{ request.user.profile.file_size }}byteに制限されています。</small>
+                                        </div>    
+                                        <button type="submit" id="submit" class="btn btn-primary dz-message">ファイル選択</button>                                    
                                     </form>
                                     
                                     <button type="submit" id="submit" disabled="true" class="btn btn-primary">アップロード</button>

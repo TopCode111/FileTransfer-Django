@@ -105,7 +105,12 @@ div.modal-body form {
 .formContainer {
   margin: auto 0;
 }
-
+.company-title{
+  text-align: center;
+  color: #F4F4F4;
+  font-weight: 500;
+  padding: 5px;
+}
 #content {
   padding: 1rem 1rem;
 }
@@ -307,6 +312,7 @@ iframe {
 #content.container-fluid {
   max-width: 100%;
   margin: 0px;
+  min-height: 81vh;
 }
 #content.container-fluid.full-width {
   max-width: 100%;
@@ -497,8 +503,12 @@ table thead th, table tbody td{
     height: 21px;
     width: 21px;
   }
+  
 }
 @media screen and (max-width: 1366px) {
+  #content.container-fluid {
+    min-height: 81.2vh;
+  }
   .switch {
     width: 39.1302083333px;
     height: 17.7864583333px;
@@ -515,6 +525,9 @@ table thead th, table tbody td{
   }
 }
 @media screen and (max-width: 1280px) {
+  #content.container-fluid {
+    min-height: 82.6vh;
+  }
   .switch {
     width: 36.6666666667px;
     height: 16.6666666667px;
@@ -658,6 +671,7 @@ body {
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
+  
   .navbar-expand-md {
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
@@ -1517,6 +1531,9 @@ table.dataTable thead .sorting_desc:after {
 }
 
 @media screen and (max-width: 767px) {
+  #content.container-fluid {
+    min-height: 77.2vh;
+  }
   .footer .right, .footer .left{
     text-align: center;
   }
