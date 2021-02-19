@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import include
 from django.views.generic import TemplateView
 from .views.user import (DashboardView, userreject, SignUp, ProfileUpdateView, PasswordUpdateView, ProjectDeleteView,DashboardInfiniteScroll,
-                        get_acquaintances, filesizeupdate, save_filesizeupdate, add_userreject, delete_userreject)
+                        get_acquaintances, filesizeupdate, save_filesizeupdate, add_userreject, delete_userreject,upload_files,set_zipfile_name,get_batch,get_files_as_zip)
 from .forms import ProfiledAuthenticationForm,PasswordResetFormUpdate
 from django.urls import reverse_lazy
 
@@ -18,6 +18,9 @@ urlpatterns = [
     path('delete_userreject/', delete_userreject, name="delete_userreject"),
     path('volumn/', filesizeupdate, name='volumn'),
     path('update_file_size', save_filesizeupdate, name="save_filesizeupdate"),
+    path('upload_files',upload_files,name='upload_files'),
+    path('set_zipfile_name',set_zipfile_name,name='set_zipfile_name'),
+
     path('login/', auth_views.LoginView.as_view(form_class=ProfiledAuthenticationForm, redirect_authenticated_user=True), name="login"),
     path('signup/', SignUp.as_view(), name="signup"),
     path('password_change/', PasswordUpdateView.as_view(), name='password_change'),
@@ -31,4 +34,6 @@ urlpatterns = [
     path('acquaintances/', get_acquaintances, name="acquaintances"),
     path('project/<int:project_id>/delete', ProjectDeleteView.as_view(), name="projectDelete"),
     # path('', include('django.contrib.auth.urls'))
+    path('<uuid:batch_id>',get_batch,name='get_batch'),
+    path('get_files_as_zip',get_files_as_zip,name='get_files_as_zip')
 ]

@@ -2,19 +2,16 @@ from django.db import models
 from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-
 from django.apps import apps
-
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-
 # Create your models here.
 from django.contrib.auth.models import User
 from django.contrib.auth.models import UserManager
-
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.conf import settings
+import uuid
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -46,6 +43,20 @@ class Project(models.Model):
 class RejectUser(models.Model):
     email = models.EmailField(_('E-mail address'), blank=False)
     applied = models.DateTimeField(auto_now_add=True)
+
+class Batch(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=255,blank=True,null=True)
+
+class BatchFile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    file = models.FileField(upload_to='files',blank=True,null=True,default=None)
+    batch = models.ForeignKey(Batch,on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+
+
 
 
 @receiver(post_save, sender=User)

@@ -299,7 +299,7 @@
                             <div class="card">
                                 <div class="card-body" id="uploadForm">
                                     <h5 class="card-title">アップロード</h5>
-                                    <form action="" class="dropzone form-group" id="my-awesome-dropzone">
+                                    <form action="{% url 'dashboard:upload_files' %}" class="dropzone form-group" id="my-awesome-dropzone">
                                         {% csrf_token %}
                                         <div class="drform-group dz-message">
                                             <br>
@@ -307,10 +307,33 @@
                                             <br>
                                             <small>ファイルアップロード容量は{{ request.user.profile.file_size }}byteに制限されています。</small>
                                         </div>    
-                                        <button type="submit" id="submit" class="btn btn-primary dz-message">ファイル選択</button>                                    
+{#                                        <button type="submit" id="submit" class="btn btn-primary dz-message">ファイル選択</button>#}
                                     </form>
                                     
                                     <button type="submit" id="submit" disabled="true" class="btn btn-primary">アップロード</button>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <input type="hidden" id="batch_id" />
+                                                <input type="text" id="zipfile_name" class="form-control" placeholder="zipname" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">.zip</span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-primary" id="generate_url" disabled="true">Generate url</button>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-12">
+                                            <input type="text" class="form-control"  id="url"  placeholder="get url from here"/>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -387,6 +410,7 @@
 <script src="{% static 'designs/js/dropzone.js' %}"></script>
 <script>
     var currentFile = null;
+    let myDropzone;
     Dropzone.options.myAwesomeDropzone = {
         // Prevents Dropzone from uploading dropped files immediately
         autoProcessQueue : false,
@@ -394,24 +418,15 @@
         uploadMultiple: true,
         maxFiles: 10,
         parallelUploads: 10,
-        acceptedFiles: "image/*",
+        maxFilesize:{{ maxfilesize }},
+        //acceptedFiles: "image/*",
         paramName: "asset",
         init : function() {
             var submitButton = document.querySelector("#submit")
             myDropzone = this;
 
             submitButton.addEventListener("click", function() {
-                if (!$("input#design-title").val()) {
-                        showToast("Please enter a valid title.", "red")
-                        return;
-                    }
-                    
-                    console.log($("input[name='team_select']").val());
-                    if (!$("input[name='team_select']").val()) {
-                        showToast("Please select a valid team.", "red")
-                        return;
-                    }
-                              
+
                 myDropzone.processQueue();
                 // Tell Dropzone to process all queued files.
             });
@@ -420,22 +435,33 @@
             // files are dropped here:
             this.on("addedfile", function(file) {
                 // Show submit button here and/or inform user to click it.
+                // if (currentFile) {
+                //     this.removeFile(currentFile);
+                // }
+                // currentFile = file;
                 $("#submit").prop('disabled', false);
             });
             this.on("error", function(file) {
                 if (!file.accepted) {
                     this.removeFile(file);
-                    showToast("Invalid file selected. Please select a valid file", "red")
+                    console.log("Invalid file selected. Please select a valid file")
                 }
             });
             this.on("sending", function(file, xhr, formData) {
-                formData.append("title", $("input#design-title").val()); 
-                    
+                if ($("input#design_id").val()) {
+                    formData.append("design", $("input#design_id").val());
+                } else if ($("input#project_id").val()) {
+                    formData.append("project", $("input#project_id").val());
+                }
             });
             this.on("success", function(file, response, action) {
-                showToast("Uploaded design successfully. Redirecting...", "green")
+                console.log("Uploaded design successfully. Redirecting...")
                 response = JSON.parse(response);
-                console.log(response)
+                //window.setTimeout(function(){ window.location = "/designs/" + response.id; },3000);
+                {#window.setTimeout(function(){ window.location = "/project/"+response.id+"/design"; },3000);#}
+                $('#batch_id').val(response.id);
+                $('#generate_url').prop('disabled',false);
+
             });
         },
         removedfile: function (file) {
@@ -445,9 +471,29 @@
             }
         }
     };
-    $('.teamSelect').autoComplete();
     $(document).ready(function() {
-        
+
+        $('#generate_url').click(function(){
+            var zipfile_name = $('#zipfile_name').val();
+            var batch_id = $('#batch_id').val();
+            if(zipfile_name!=''){
+                $.ajax({
+                    url : '{% url 'dashboard:set_zipfile_name' %}',
+                    data:{
+                        name : zipfile_name,
+                        batch_id:batch_id,
+                        csrfmiddlewaretoken: "{{ csrf_token }}"
+                    },
+                    type:'POST',
+                    success:function(data){
+                        console.log(data);
+                        $('#url').val(data.url);
+                        myDropzone.removeAllFiles(true);
+                    }
+                });
+            }
+
+        });
         
     } );
 </script>
