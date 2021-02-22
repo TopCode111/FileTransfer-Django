@@ -1,4 +1,5 @@
 from dashboard.forms import UserCreateForm, ProfiledAuthenticationForm
+from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
 from django.views import generic
 from django.shortcuts import redirect, reverse, HttpResponseRedirect, render, HttpResponse
@@ -34,7 +35,11 @@ from django.template import RequestContext
 import datetime
 from django.utils import timezone
 from django.contrib.auth import views as auth_views
-from dashboard.models import Profile, Project, RejectUser
+from dashboard.models import Profile, Project, RejectUser ,Batch, BatchFile
+import os
+import zipfile
+from io import StringIO
+from io import BytesIO
 
 class DashboardView(auth_views.LoginView):
     template_name = "dashboard/home.html"
@@ -43,6 +48,10 @@ class DashboardView(auth_views.LoginView):
         # context = {'form': self.form_class()}
         context = self.get_context_data()
         context['form'] = self.form_class()
+
+        if request.user.is_authenticated:
+            maxfilesize = request.user.profile.file_size / 1000000
+            context['maxfilesize'] = maxfilesize
         return render(request, self.template_name, context)
 
 class DashboardInfiniteScroll(View):
@@ -258,3 +267,54 @@ def delete_userreject(request):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False})
+
+@require_POST
+def upload_files(request):
+    batch = Batch()
+    batch.user = request.user
+    batch.save()
+
+    for file in request.FILES:
+        file = request.FILES[file]
+        batch_file = BatchFile(file=file)
+        batch_file.batch = batch
+        batch_file.save()
+
+    resp = HttpResponse(f'{{"message": "Uploaded successfully...", "id": "{batch.id}"}}')
+    resp.status_code = 200
+    resp.content_type = "application/json"
+    return resp
+
+@require_POST
+def set_zipfile_name(request):
+    batch_id = request.POST.get('batch_id')
+    name = request.POST.get('name')
+    batch = Batch.objects.get(id=batch_id)
+    batch.name = name
+    batch.save()
+    url = request.scheme+'://'+request.get_host()+'/'+str(batch.id)
+    return JsonResponse({'success':True,'url':url})
+
+def get_batch(request,batch_id):
+    batch = Batch.objects.get(id=batch_id)
+    return render(request, 'dashboard/batch.html', context={'batch': batch})
+
+def get_files_as_zip(request):
+    batch_id = request.GET.get('batch_id')
+    batch = Batch.objects.get(id=batch_id)
+    filenames = []
+    for file in batch.batchfile_set.all():
+        filenames.append(file.file.path)
+
+    zip_filename = batch.name+'.zip'
+    byte_data = BytesIO()
+    zip_file = zipfile.ZipFile(byte_data, "w")
+
+    for file in filenames:
+        filename = os.path.basename(os.path.normpath(file))
+        zip_file.write(file, filename)
+    zip_file.close()
+
+    response = HttpResponse(byte_data.getvalue(), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
+    return response
