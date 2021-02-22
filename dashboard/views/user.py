@@ -50,7 +50,7 @@ class DashboardView(auth_views.LoginView):
         context['form'] = self.form_class()
 
         if request.user.is_authenticated:
-            maxfilesize = request.user.profile.file_size / 1000000
+            maxfilesize = request.user.profile.remaining_space / 1000000
             context['maxfilesize'] = maxfilesize
         return render(request, self.template_name, context)
 
@@ -278,9 +278,13 @@ def upload_files(request):
         file = request.FILES[file]
         batch_file = BatchFile(file=file)
         batch_file.batch = batch
+        batch_file.size = file.size
         batch_file.save()
 
-    resp = HttpResponse(f'{{"message": "Uploaded successfully...", "id": "{batch.id}"}}')
+    remaining_space_in_mb = request.user.profile.remaining_space / 1000000
+    remaining_space = request.user.profile.remaining_space
+
+    resp = HttpResponse(f'{{"message": "Uploaded successfully...", "id": "{batch.id}","remaining_space_in_mb": "{remaining_space_in_mb}","remaining_space": "{remaining_space}"}}')
     resp.status_code = 200
     resp.content_type = "application/json"
     return resp
@@ -318,3 +322,9 @@ def get_files_as_zip(request):
     response = HttpResponse(byte_data.getvalue(), content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
     return response
+
+def get_remaining_space(request):
+    remaining_space_in_mb = request.user.profile.remaining_space / 1000000
+    remaining_space = request.user.profile.remaining_space
+    return JsonResponse({'remaining_space':remaining_space,'remaining_space_in_mb':remaining_space_in_mb})
+

@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import UserManager
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
+from django.db.models import Sum
 from django.conf import settings
 import uuid
 
@@ -31,6 +32,18 @@ class Profile(models.Model):
     @property
     def can_login(self):
         return self.user
+
+    @property
+    def occupied_space(self):
+        all_batch = self.user.batch_set.all().values_list('id',flat=True)
+        occupied_space = BatchFile.objects.filter(batch_id__in=all_batch).aggregate(Sum('size'))
+        return occupied_space['size__sum']
+
+    @property
+    def remaining_space(self):
+        occupied = self.occupied_space
+        return (settings.MAX_UPLOAD_SIZE-occupied)
+
 
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -55,6 +68,7 @@ class BatchFile(models.Model):
     file = models.FileField(upload_to='files',blank=True,null=True,default=None)
     batch = models.ForeignKey(Batch,on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
+    size = models.IntegerField(default=0)
 
 
 

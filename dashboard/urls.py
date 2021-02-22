@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import include
 from django.views.generic import TemplateView
 from .views.user import (DashboardView, userreject, SignUp, ProfileUpdateView, PasswordUpdateView, ProjectDeleteView,DashboardInfiniteScroll,
-                        get_acquaintances, filesizeupdate, save_filesizeupdate, add_userreject, delete_userreject,upload_files,set_zipfile_name,get_batch,get_files_as_zip)
+                        get_acquaintances, filesizeupdate, save_filesizeupdate, add_userreject, delete_userreject,upload_files,set_zipfile_name,get_batch,get_files_as_zip,get_remaining_space)
 from .forms import ProfiledAuthenticationForm,PasswordResetFormUpdate
 from django.urls import reverse_lazy
 
@@ -35,5 +35,6 @@ urlpatterns = [
     path('project/<int:project_id>/delete', ProjectDeleteView.as_view(), name="projectDelete"),
     # path('', include('django.contrib.auth.urls'))
     path('<uuid:batch_id>',get_batch,name='get_batch'),
-    path('get_files_as_zip',get_files_as_zip,name='get_files_as_zip')
+    path('get_files_as_zip',get_files_as_zip,name='get_files_as_zip'),
+    path('get_remaining_space',get_remaining_space,name='get_remaining_space'),
 ]
