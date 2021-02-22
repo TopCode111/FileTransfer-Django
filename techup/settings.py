@@ -88,7 +88,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # RDS_PASSWORD = "D1WSyQKbeZZk7WBR"
 
 if 'RDS_HOSTNAME' in os.environ:
-    ALLOWED_HOSTS = ["", ""]
+    ALLOWED_HOSTS = ["tech.us-east-2.elasticbeanstalk.com", ""]
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
