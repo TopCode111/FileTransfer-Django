@@ -33,8 +33,7 @@ ALLOWED_HOSTS = ["192.168.10.5"]
 
 INSTALLED_APPS = [
     'designs',
-    'dashboard',
-    
+    'dashboard',    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -173,9 +172,10 @@ else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 SITE_URL="https://"
+STATIC_URL=os.environ.get('STATIC_URL', default=f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com')
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-SENDGRID_API_KEY='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'
+SENDGRID_API_KEY=os.environ.get('SENDGRID_API_KEY')
 RESET_EMAIL_TEMPLATE_ID=''
 #EMAIL_HOST = "email-smtp.us-west-2.amazonaws.com"
 EMAIL_PORT = 587
