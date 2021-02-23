@@ -1,5 +1,0 @@
-version: 1
-cron:
- — name: "cron"
-   url: "/dashboard"
-   schedule: "*/5 * * * *"
