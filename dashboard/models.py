@@ -42,7 +42,10 @@ class Profile(models.Model):
     @property
     def remaining_space(self):
         occupied = self.occupied_space
-        return (settings.MAX_UPLOAD_SIZE-occupied)
+        if occupied:
+            return (self.user.profile.file_size-occupied)
+        else:
+            return settings.MAX_UPLOAD_SIZE
 
 
 class Project(models.Model):

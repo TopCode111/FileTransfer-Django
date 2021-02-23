@@ -40,6 +40,7 @@ import os
 import zipfile
 from io import StringIO
 from io import BytesIO
+import requests
 
 class DashboardView(auth_views.LoginView):
     template_name = "dashboard/home.html"
@@ -306,18 +307,31 @@ def get_batch(request,batch_id):
 def get_files_as_zip(request):
     batch_id = request.GET.get('batch_id')
     batch = Batch.objects.get(id=batch_id)
-    filenames = []
-    for file in batch.batchfile_set.all():
-        filenames.append(file.file.path)
+    zip_filename = batch.name + '.zip'
 
-    zip_filename = batch.name+'.zip'
-    byte_data = BytesIO()
-    zip_file = zipfile.ZipFile(byte_data, "w")
+    if "AWS_STORAGE_BUCKET_NAME" in os.environ:
+        s3files =[]
+        for file in batch.batchfile_set.all():
+            s3files.append(file.file.url)
 
-    for file in filenames:
-        filename = os.path.basename(os.path.normpath(file))
-        zip_file.write(file, filename)
-    zip_file.close()
+        byte_data = BytesIO()
+        zip_file = zipfile.ZipFile(byte_data, "w")
+        for s3file in s3files:
+            filename = s3file.split('/')[-1]
+            response = requests.get(s3file)
+            zip_file.writestr(filename, response.content)
+        zip_file.close()
+    else:
+        filenames = []
+        for file in batch.batchfile_set.all():
+            filenames.append(file.file.path)
+
+        byte_data = BytesIO()
+        zip_file = zipfile.ZipFile(byte_data, "w")
+        for file in filenames:
+            filename = os.path.basename(os.path.normpath(file))
+            zip_file.write(file, filename)
+        zip_file.close()
 
     response = HttpResponse(byte_data.getvalue(), content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename

@@ -523,7 +523,7 @@
                     type:'POST',
                     success:function(data){
                         $('#url').val(data.url);
-                        myDropzone.removeAllFiles(true);
+                        //myDropzone.removeAllFiles(true);
                         var progressElement = document.querySelector(".progress #progress-bar");
                         var progress = 0;
                         progressElement.style.width = progress + "%";
