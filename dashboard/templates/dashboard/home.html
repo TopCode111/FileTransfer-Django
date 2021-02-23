@@ -305,11 +305,16 @@
                                             <br>
                                             <b>ここにファイルをドラッグ&ドロップしてください。</b>
                                             <br>
-                                            <small>ファイルアップロード容量は{{ request.user.profile.file_size }}byteに制限されています。</small>
+                                            <small>ファイルアップロード容量は <span id="remaining_space">{{ request.user.profile.remaining_space }}</span> byteに制限されています。</small>
                                         </div>    
 {#                                        <button type="submit" id="submit" class="btn btn-primary dz-message">ファイル選択</button>#}
+
                                     </form>
-                                    
+                                    <div class="progress mb-3">
+                                            <div class="progress-bar progress-bar-primary" role="progressbar" data-dz-uploadprogress id="progress-bar">
+                                                <span class="progress-text"></span>
+                                            </div>
+                                    </div>
                                     <button type="submit" id="submit" disabled="true" class="btn btn-primary">アップロード</button>
                                 </div>
                                 <div class="card-footer">
@@ -411,6 +416,8 @@
 <script>
     var currentFile = null;
     let myDropzone;
+    var totalsize = 0.0;
+    var MAX_TOTAL_SIZE = {{ maxfilesize }};
     Dropzone.options.myAwesomeDropzone = {
         // Prevents Dropzone from uploading dropped files immediately
         autoProcessQueue : false,
@@ -421,6 +428,14 @@
         maxFilesize:{{ maxfilesize }},
         //acceptedFiles: "image/*",
         paramName: "asset",
+        accept: function(file, done) {
+            if (totalsize >= MAX_TOTAL_SIZE) {
+                file.status = Dropzone.CANCELED;
+                this._errorProcessing([file],  "Max limit reached", null);
+            }else {
+                done();
+            }
+        },
         init : function() {
             var submitButton = document.querySelector("#submit")
             myDropzone = this;
@@ -440,6 +455,10 @@
                 // }
                 // currentFile = file;
                 $("#submit").prop('disabled', false);
+                totalsize += parseFloat((file.size / (1024*1024)).toFixed(2));
+            });
+            this.on("removedfile", function(file) {
+                    totalsize -= parseFloat((file.size / (1024*1024)).toFixed(2));
             });
             this.on("error", function(file) {
                 if (!file.accepted) {
@@ -461,13 +480,30 @@
                 {#window.setTimeout(function(){ window.location = "/project/"+response.id+"/design"; },3000);#}
                 $('#batch_id').val(response.id);
                 $('#generate_url').prop('disabled',false);
+                MAX_TOTAL_SIZE = response.remaining_space_in_mb;
+                $('#remaining_space').html(response.remaining_space);
 
             });
+
+            /*this.on("totaluploadprogress", function(progress) {
+                document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+                console.log(progress);
+            });*/
+
         },
         removedfile: function (file) {
             file.previewElement.remove();
             if (!this.files.length) {
                 $("#submit").prop('disabled', true);
+            }
+        },
+        uploadprogress: function(file, progress, bytesSent) {
+            console.log(progress)
+            //console.log(file.previewElement)
+            if (file.previewElement) {
+                var progressElement = document.querySelector(".progress #progress-bar");
+                progressElement.style.width = progress + "%";
+                document.querySelector(".progress .progress-text").textContent = progress + "%";
             }
         }
     };
@@ -486,9 +522,12 @@
                     },
                     type:'POST',
                     success:function(data){
-                        console.log(data);
                         $('#url').val(data.url);
                         myDropzone.removeAllFiles(true);
+                        var progressElement = document.querySelector(".progress #progress-bar");
+                        var progress = 0;
+                        progressElement.style.width = progress + "%";
+                        document.querySelector(".progress .progress-text").textContent = progress + "%";
                     }
                 });
             }
