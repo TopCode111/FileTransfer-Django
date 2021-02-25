@@ -1,0 +1,88 @@
+{% extends 'designs/base.html' %}
+{% block content %}
+{% load static %}
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    </br>
+    </br>
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:homepage' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:userreject' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>ユーザー登録拒否</span></a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:volumn' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>容量管理</span></a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'dashboard:payment_history' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Payment History</span></a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+    </ul>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Content Row -->
+                <div class="row">
+                    <div class=" col-xl-12 col-lg-12">
+                        <div class="card shadow">
+                        <table >
+                            <thead class="card-header py-3">
+                                <th>Created</th>
+                                <th>User</th>
+                                <th>Storage</th>
+                                <th>Price</th>
+                            </thead>
+                            <tbody>
+                                {% for payment in payment_history %}
+                                <tr>
+                                    <td>{{ payment.created }}</td>
+                                    <td>{{ payment.user.username }}</td>
+                                    <td>{{ payment.storage }}</td>
+                                    <td>
+                                        {% if payment.price == 0 %}
+                                            Free
+                                        {% else %}
+                                            ¥{{ payment.price }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block scripts %}
+{% endblock %}

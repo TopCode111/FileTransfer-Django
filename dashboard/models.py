@@ -74,7 +74,11 @@ class BatchFile(models.Model):
     size = models.IntegerField(default=0)
 
 
-
+class PaymentHistory(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    storage = models.IntegerField()
+    price = models.FloatField(default=0)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

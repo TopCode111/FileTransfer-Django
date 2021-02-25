@@ -41,6 +41,13 @@
             </li>
             <!-- Divider -->
             <hr class="sidebar-divider">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard:payment_history' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Payment History</span></a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
         </ul>
         {% else %}
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -52,7 +59,15 @@
                 <a class="nav-link" href="{% url 'dashboard:homepage' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>ファイル管理</span></a>
-            </li>            
+            </li>
+            <hr class="sidebar-divider">
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'dashboard:payment' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>payment</span></a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
         </ul>
         <!-- End of Sidebar -->
         {% endif %}

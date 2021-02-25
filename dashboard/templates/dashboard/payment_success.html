@@ -1,0 +1,23 @@
+{% extends 'designs/base.html' %}
+{% load static %}
+{% block links %}
+{% endblock %}
+{% block content %}
+    <div id="content" class="container-fluid auth-wrapper full-height">
+        <div class="row flex-1">
+             <div class="col-lg-4 col-md-12 justify-content-center auth-panel">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            Payment Success
+                        </div>
+                        <div class="card-body">
+                            <p class="text-success">You have successfully bought {{ file_space }} Bytes. Go back <a href="/">here.</a></p>
+                        </div>
+                    </div>
+
+             </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block scripts %}
+{% endblock %}

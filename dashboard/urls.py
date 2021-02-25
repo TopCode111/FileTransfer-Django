@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import include
 from django.views.generic import TemplateView
 from .views.user import (DashboardView, userreject, SignUp, ProfileUpdateView, PasswordUpdateView, ProjectDeleteView,DashboardInfiniteScroll,
-                        get_acquaintances, filesizeupdate, save_filesizeupdate, add_userreject, delete_userreject,upload_files,set_zipfile_name,get_batch,get_files_as_zip,get_remaining_space)
+                        get_acquaintances, filesizeupdate, save_filesizeupdate, add_userreject, delete_userreject,upload_files,set_zipfile_name,get_batch,get_files_as_zip,get_remaining_space,payment,stripe_config,create_checkout_session,stripe_webhook,SuccessView,CancelledView,payment_history)
 from .forms import ProfiledAuthenticationForm,PasswordResetFormUpdate
 from django.urls import reverse_lazy
 
@@ -20,6 +20,15 @@ urlpatterns = [
     path('update_file_size', save_filesizeupdate, name="save_filesizeupdate"),
     path('upload_files',upload_files,name='upload_files'),
     path('set_zipfile_name',set_zipfile_name,name='set_zipfile_name'),
+    path('payment',payment,name='payment'),
+    path('payment_history',payment_history,name='payment_history'),
+
+    # payment
+    path('config/', stripe_config,name='config'),
+    path('create-checkout-session/',create_checkout_session),
+    path('payment/success/', SuccessView.as_view()),
+    path('payment/cancelled/', CancelledView.as_view()),
+    path('payment/webhook/', stripe_webhook),
 
     path('login/', auth_views.LoginView.as_view(form_class=ProfiledAuthenticationForm, redirect_authenticated_user=True), name="login"),
     path('signup/', SignUp.as_view(), name="signup"),
