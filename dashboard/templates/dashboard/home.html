@@ -15,7 +15,7 @@
         </br>
         </br>
             <!-- Nav Item - Dashboard -->
-            <h2>テックアップ</h2>
+            
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'dashboard:homepage' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -28,7 +28,7 @@
             <!-- Heading -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'dashboard:userreject' %}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-fw fa-cog"></i>
                     <span>ユーザー登録拒否</span></a>
             </li>
             <!-- Divider -->
@@ -36,8 +36,15 @@
 
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'dashboard:volumn' %}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-fw fa-wrench"></i>
                     <span>容量管理</span></a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard:payment_history' %}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>ペイメントヒストリー</span></a>
             </li>
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -47,12 +54,20 @@
         </br>
         </br>
             <!-- Nav Item - Dashboard -->
-            <h4 class="company-title">テックアップ</h4>
+            
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'dashboard:homepage' %}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-fw fa-folder"></i>
                     <span>ファイル管理</span></a>
-            </li>            
+            </li>
+            <hr class="sidebar-divider">
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'dashboard:payment' %}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>ペイメント</span></a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
         </ul>
         <!-- End of Sidebar -->
         {% endif %}
@@ -73,8 +88,8 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                                輸入 （月）</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">￥40,000</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -91,8 +106,8 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Earnings (Annual)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                                輸入 （年）</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">￥215,000</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -138,8 +153,8 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Pending Requests</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                                ユーザー数</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ user_all_num }}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -158,13 +173,32 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">輸入通計</h6>
                                     
                                 </div>
                                 <!-- Card Body -->
-                                <div class="card-body">
+                                <div class="card-body" style="padding: 0;">
                                     <div class="chart-area">
                                         <canvas id="myAreaChart"></canvas>
+                                        <!--<table>
+                                            <thead class="card-header py-3">
+                                                <th>No</th>
+                                                <th>ールアドレス</th>
+                                                <th>サイズ(KB)</th>
+                                                
+                                            </thead>
+                                            <tbody>
+                                                {% for user in users %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ user.email }}</td>
+                                                    <td>{% widthratio user.profile.file_size 1024 1 %}</td> 
+                                                                                              
+                                                </tr>
+                                                {% endfor %}
+                                                
+                                            </tbody>
+                                        </table>-->
                                     </div>
                                 </div>
                             </div>
@@ -176,24 +210,26 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">ユーザー通計</h6>
                                     
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-pie pt-4 pb-2">
+                                        <input type="hidden" id="user_number" value="{{ users.count }}">
+                                        <input type="hidden" id="reject_user_number" value="{{ reject_users.count }}">
                                         <canvas id="myPieChart"></canvas>
                                     </div>
                                     <div class="mt-4 text-center small">
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
+                                            <i class="fas fa-circle text-primary"></i> 登録ユーザー
                                         </span>
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
+                                            <i class="fas fa-circle text-success"></i> ユーザー登録拒否
                                         </span>
-                                        <span class="mr-2">
+                                        <!--<span class="mr-2">
                                             <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
+                                        </span>-->
                                     </div>
                                 </div>
                             </div>
@@ -217,8 +253,8 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                                輸入 （月）</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">￥40,000</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -235,8 +271,8 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Earnings (Annual)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                                輸入 （年）</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">￥215,000</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -282,8 +318,9 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Pending Requests</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                                ユーザー数</div>
+                                                
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ user_all_num }}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -305,7 +342,7 @@
                                             <br>
                                             <b>ここにファイルをドラッグ&ドロップしてください。</b>
                                             <br>
-                                            <small>ファイルアップロード容量は <span id="remaining_space">{{ request.user.profile.remaining_space }}</span> byteに制限されています。</small>
+                                            <small>ファイルアップロード容量は <span id="remaining_space">{% widthratio request.user.profile.remaining_space 1024 1 %}</span>KBに制限されています。</small>
                                         </div>    
 {#                                        <button type="submit" id="submit" class="btn btn-primary dz-message">ファイル選択</button>#}
 
@@ -322,7 +359,7 @@
                                         <div class="col-md-8">
                                             <div class="input-group">
                                                 <input type="hidden" id="batch_id" />
-                                                <input type="text" id="zipfile_name" class="form-control" placeholder="zipname" />
+                                                <input type="text" id="zipfile_name" class="form-control" placeholder="ファイル名" />
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">.zip</span>
                                                 </div>
@@ -330,12 +367,12 @@
 
                                         </div>
                                         <div class="col-md-4">
-                                            <button class="btn btn-primary" id="generate_url" disabled="true">Generate url</button>
+                                            <button class="btn btn-primary" id="generate_url" disabled="true">URLの生成</button>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control"  id="url"  placeholder="get url from here"/>
+                                            <input type="text" class="form-control"  id="url"  placeholder="URLのコピーはこちら"/>
                                         </div>
                                     </div>
 
@@ -344,13 +381,13 @@
                         </div>
                         <!--END Pannel-->
                         <!--Preview Pannel-->
-                        <div class="col-xl-6 col-lg-6">
+                        <!--<div class="col-xl-6 col-lg-6">
                             <div class="card">
                                 <div class="card-body">
                                     <h5>最近アップロードされたファイル</h5>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                         <!--END pannel-->
                     </div>           
                 </div>
@@ -413,6 +450,8 @@
 
 </script>
 <script src="{% static 'designs/js/dropzone.js' %}"></script>
+<script src="{% static 'designs/js/Chart.min.js' %}"></script>
+<script src="{% static 'designs/js/chart-area-demo.js' %}"></script>
 <script>
     var currentFile = null;
     let myDropzone;
@@ -533,7 +572,48 @@
             }
 
         });
-        
+        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#858796';
+
+        // Pie Chart Example
+        var ctx = document.getElementById("myPieChart");
+        var user_number = $("#user_number").val();
+        var reject_user_number = $("#reject_user_number").val();
+        const all_user = Number(user_number) + Number(reject_user_number)
+        //alert(reject_user_number);
+        user_rate = user_number/all_user*100;
+        reject_user_rate = 100 - user_rate;
+        payment_user_rate = 100 - user_rate - reject_user_rate;
+        var myPieChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ["登録ユーザー", "ユーザー登録拒否", "ユーザー"],
+            datasets: [{
+            data: [user_rate, reject_user_rate , payment_user_rate],
+            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+            hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+            },
+            legend: {
+            display: false
+            },
+            cutoutPercentage: 80,
+        },
+        });
     } );
 </script>
+
 {% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'designs/base.html' %}
+{% block content %}
+{% load static %}
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    </br>
+    </br>
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:homepage' %}">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>ファイル管理</span></a>
+        </li>
+        <hr class="sidebar-divider">
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'dashboard:payment' %}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>ペイメント</span></a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+    </ul>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Content Row -->
+                <div class="row">
+                    <div class=" col-xl-12 col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card shadow">
+                                    <div class="card-header">
+                                        <span>パッケージ1</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <strong>無料</strong>
+                                        <p>容量 : 400KBまで </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-primary purchase" disabled="true" data-id="1">購入</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card shadow">
+                                    <div class="card-header">
+                                        <span>パッケージ2</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <strong>100</strong><small>￥/月</small>
+                                        <p>容量 : 5GBまで </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-primary purchase" data-id="2">購入</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block scripts %}
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="{% static 'designs/js/main.js' %}"></script>
+{% endblock %}

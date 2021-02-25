@@ -19,7 +19,7 @@
         <!-- Heading -->
         <li class="nav-item ">
             <a class="nav-link" href="{% url 'dashboard:userreject' %}">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <i class="fas fa-fw fa-cog"></i>
                 <span>ユーザー登録拒否</span></a>
         </li>
         <!-- Divider -->
@@ -27,8 +27,15 @@
 
         <li class="nav-item active">
             <a class="nav-link" href="{% url 'dashboard:volumn' %}">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <i class="fas fa-fw fa-wrench"></i>
                 <span>容量管理</span></a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:payment_history' %}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>ペイメントヒストリー</span></a>
         </li>
         <!-- Divider -->
         <hr class="sidebar-divider">

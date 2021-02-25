@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '7pgm!f062)+wellq8no=#kq2&=x+_^07i3cs0=qh1vd&s%$123'
+SECRET_KEY = '7pgm!f062)+wellq8no=#kq2&=x+_^07i3cs0=qh1vd&s%$1tj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -33,7 +33,8 @@ ALLOWED_HOSTS = ["192.168.10.5"]
 
 INSTALLED_APPS = [
     'designs',
-    'dashboard',    
+    'dashboard',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -71,10 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-            ],
-            'libraries':{
-                'tag_custom': 'dashboard.templatetags.tag_custom',
-            }
+            ]
         },
     },
 ]
@@ -90,7 +88,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # RDS_PASSWORD = "D1WSyQKbeZZk7WBR"
 
 if 'RDS_HOSTNAME' in os.environ:
-    ALLOWED_HOSTS = ["tech.us-east-2.elasticbeanstalk.com", ""]
+    ALLOWED_HOSTS = ["", ""]
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -170,7 +168,6 @@ if "AWS_ACCESS_KEY_ID" in os.environ and "AWS_STORAGE_BUCKET_NAME" in os.environ
     }
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    STATIC_URL=os.environ.get('STATIC_URL', default=f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com')
 else:
     MEDIA_URL = "/media/"
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
@@ -178,7 +175,7 @@ else:
 SITE_URL="https://"
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-SENDGRID_API_KEY=os.environ.get('SENDGRID_API_KEY')
+SENDGRID_API_KEY='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'
 RESET_EMAIL_TEMPLATE_ID=''
 #EMAIL_HOST = "email-smtp.us-west-2.amazonaws.com"
 EMAIL_PORT = 587
@@ -189,6 +186,6 @@ NAME_FROM = "Hello"
 EMAIL_USE_TLS = True
 MAX_UPLOAD_SIZE = 5242880
 
-STRIPE_PUBLISHABLE_KEY = ''
-STRIPE_SECRET_KEY = ''
-STRIPE_ENDPOINT_SECRET = ''
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51Hf3NsGAsgjDnPgtOLEIkp3KfBoBAMs9IaFq7a91t36X429iDDB2XT2LlY3AA55V7RX719goBWW4SUDpclDCZG7n00JRQEqS8Q'
+STRIPE_SECRET_KEY = 'sk_test_51Hf3NsGAsgjDnPgtzTTvlUTNcT2edbYohI7MfZvTTvEE1hLXodknQmG7q9zwg2NBiHzKlblwBw3OBmEmYhjdmt360064osp2oT'
+STRIPE_ENDPOINT_SECRET = 'whsec_XXnsex7KSrWiucRtpphcZagkCfUTiCWn'

@@ -35,12 +35,14 @@ from django.template import RequestContext
 import datetime
 from django.utils import timezone
 from django.contrib.auth import views as auth_views
-from dashboard.models import Profile, Project, RejectUser ,Batch, BatchFile
+from dashboard.models import Profile, Project, RejectUser ,Batch, BatchFile,PaymentHistory
 import os
 import zipfile
 from io import StringIO
 from io import BytesIO
 import requests
+from django.views.decorators.csrf import csrf_exempt
+import stripe
 
 class DashboardView(auth_views.LoginView):
     template_name = "dashboard/home.html"
@@ -53,7 +55,15 @@ class DashboardView(auth_views.LoginView):
         if request.user.is_authenticated:
             maxfilesize = request.user.profile.remaining_space / 1000000
             context['maxfilesize'] = maxfilesize
+        
+        users = User.objects.all()
+        reject_users = RejectUser.objects.all()
+        user_all_num = int(users.count()) + int(reject_users.count())
+        context['users'] = users
+        context['reject_users'] = reject_users
+        context['user_all_num'] = user_all_num
         return render(request, self.template_name, context)
+        
 
 class DashboardInfiniteScroll(View):
 
@@ -232,6 +242,119 @@ def userreject(request):
     reject_user = RejectUser.objects.all()
     return render(request, 'dashboard/userreject.html', context={"RejectUser": reject_user})
 
+@login_required
+def payment(request):
+    return render(request, 'dashboard/payment.html', context={})
+
+@login_required
+def payment_history(request):
+    payment_history = PaymentHistory.objects.all()
+    return render(request, 'dashboard/payment_history.html', context={'payment_history':payment_history})
+
+@csrf_exempt
+def stripe_config(request):
+    if request.method == 'GET':
+        stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
+        return JsonResponse(stripe_config, safe=False)
+
+@csrf_exempt
+def create_checkout_session(request):
+    if request.method == 'GET':
+        plan_id = request.GET.get('plan_id')
+        user = request.user
+        name = ''
+        if plan_id=='1':
+            name = 'Free'
+            price = 0
+            user = request.user
+            user.profile.file_size = user.profile.file_size + 4000
+            user.profile.save()
+            user.save()
+            payment = PaymentHistory()
+            payment.user = user
+            payment.storage = 4000
+            payment.price = 0
+            payment.save()
+            return JsonResponse({'success':True})
+        if plan_id=='2':
+            name = '100￥'
+            price = 100
+        # domain_url = 'http://localhost:8003/'
+        domain_url = request.scheme+'://'+request.META['HTTP_HOST']+'/'
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                success_url=domain_url + 'payment/success?session_id={CHECKOUT_SESSION_ID}&plan_id='+plan_id,
+                cancel_url=domain_url + 'payment/cancelled/',
+                payment_method_types=['card'],
+                customer_email=request.user.email,
+                mode='payment',
+                line_items=[
+                    {
+                        'name': name,
+                        'quantity': 1,
+                        'currency': 'JPY',
+                        'amount': int(price),
+                    }
+                ],
+                metadata={'plan_id':plan_id},
+                client_reference_id = request.user.id
+            )
+            return JsonResponse({'sessionId': checkout_session['id']})
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+
+@csrf_exempt
+def stripe_webhook(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        return HttpResponse(status=400)
+
+    if event['type'] == 'checkout.session.completed':
+
+        data = event['data']['object']
+        user_id = data['client_reference_id']
+        user = User.objects.get(id=user_id)
+        plan_id = int(data['metadata']['plan_id'])
+
+        if int(plan_id) == 2:
+            user.profile.file_size = user.profile.file_size + 5368706371
+            user.profile.save()
+            user.save()
+            payment = PaymentHistory()
+            payment.user = user
+            payment.storage = 5368706371
+            payment.price = 100
+            payment.save()
+
+
+    return HttpResponse(status=200)
+
+class SuccessView(generic.TemplateView):
+    template_name = 'dashboard/payment_success.html'
+
+    def get(self, request, *args, **kwargs):
+        plan_id = request.GET.get('plan_id')
+        if plan_id == '1':
+            file_space = 4000
+        elif plan_id == '2':
+            file_space = 5368706371
+        return render(request,self.template_name,{'file_space':file_space})
+
+class CancelledView(generic.TemplateView):
+    template_name = 'dashboard/payment_cancelled.html'
+
 @require_http_methods(["POST"])
 @login_required
 def add_userreject(request):
@@ -341,4 +464,3 @@ def get_remaining_space(request):
     remaining_space_in_mb = request.user.profile.remaining_space / 1000000
     remaining_space = request.user.profile.remaining_space
     return JsonResponse({'remaining_space':remaining_space,'remaining_space_in_mb':remaining_space_in_mb})
-

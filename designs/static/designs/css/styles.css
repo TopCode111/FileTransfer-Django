@@ -43,6 +43,9 @@ footer{
 .justify-content-center{
   padding: 0 2rem 2rem 2rem;
 }
+.container.messages.justify-content-center{
+  padding: 0;
+}
 .childcontainer {
   width: 100%;
   padding: 1rem 2rem 2rem 2rem;
@@ -132,7 +135,9 @@ div.modal-body form {
   font-weight: 500;
   font-size: 19px;
 }
-
+.card-footer{
+  text-align: center !important;
+}
 /* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {
   visibility: hidden;
@@ -441,7 +446,7 @@ iframe {
   vertical-align: inherit;
 }
 .log-image {
-  width: 155px;
+  width: 160px;
   height: 35px;
   overflow: hidden;
 }
@@ -568,6 +573,9 @@ body {
 .sidebar .nav-item.active .nav-link{
   color: #4e73df;
   background-color: #fff;
+}
+.sidebar-dark .nav-item.active .nav-link i{
+  color: #4e73df;
 }
 .navbar.navbar-dark .navbar-nav .nav-link {
   color: rgb(7, 7, 7);
