@@ -17,12 +17,13 @@ from django.contrib.auth.forms import (
 
 class UserCreateForm(UserCreationForm):
     email = forms.EmailField(label="メールアドレス", required=True)
-    
+    first_name = forms.CharField(label='姓', required=True)
+    last_name = forms.CharField(label='名', required=True)
     password1 = forms.CharField(label='パスワード', required=True, strip=False, widget=forms.PasswordInput())
     password2 = forms.CharField(label='パスワード確認', required=True, strip=False, widget=forms.PasswordInput())
     class Meta:
         model = User
-        fields = ("email", "password1", "password2")
+        fields = ("email", "first_name", "last_name", "password1", "password2")
 
     def clean(self):
         super(UserCreateForm, self).clean()
@@ -40,7 +41,8 @@ class UserCreateForm(UserCreationForm):
         user = super(UserCreateForm, self).save(commit=False)
         user.email = self.cleaned_data["email"]
         user.username = self.cleaned_data["email"]
-        
+        user.first_name = self.cleaned_data["first_name"]
+        user.last_name = self.cleaned_data["last_name"]
         user.save()
         return user
 
