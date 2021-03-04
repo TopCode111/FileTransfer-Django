@@ -22,11 +22,11 @@ class Profile(models.Model):
 
     @property
     def display_name(self):
-        name = "Unnamed User"
-        #if self.user.first_name:
-        #    name = self.user.first_name
-        #if self.user.last_name:
-        #    name += " " + self.user.last_name + "."
+        name = "ユーザー"
+        if self.user.last_name:
+            name = self.user.last_name
+        if self.user.first_name:
+            name += " " + self.user.first_name + "."
         return name
 
     @property
