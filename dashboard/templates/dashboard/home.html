@@ -358,28 +358,41 @@
                                 </div>
                                 <div class="card-footer">
                                     <div class="row">
-                                        <div class="col-md-8">
-                                            <div class="input-group">
-                                                <input type="hidden" id="batch_id" />
-                                                <input type="text" id="zipfile_name" class="form-control" placeholder="ファイル名" />
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text">.zip</span>
-                                                </div>
-                                            </div>
-
+                                        <div class="col-md-6">
+                                            <p id="filename"></p>
                                         </div>
-                                        <div class="col-md-4">
-                                            <button class="btn btn-primary" id="generate_url" disabled="true">URLの生成</button>
+                                        <div class="col-md-6">
+                                            <input type="hidden" id="batch_id" />
+                                            <button class="btn btn-primary" id="download_btn" disabled>ダウンロード</button>
                                         </div>
                                     </div>
-                                    <div class="row mt-2">
-                                        <div class="col-md-12">
-                                            <input type="text" class="form-control"  id="url"  placeholder="URLのコピーはこちら"/>
-                                        </div>
-                                    </div>
-
                                 </div>
+
+{#                                <div class="card-footer">#}
+{#                                    <div class="row">#}
+{#                                        <div class="col-md-8">#}
+{#                                            <div class="input-group">#}
+{#                                                <input type="hidden" id="batch_id" />#}
+{#                                                <input type="text" id="zipfile_name" class="form-control" placeholder="ファイル名" />#}
+{#                                                <div class="input-group-append">#}
+{#                                                    <span class="input-group-text">.zip</span>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{##}
+{#                                        </div>#}
+{#                                        <div class="col-md-4">#}
+{#                                            <button class="btn btn-primary" id="generate_url" disabled="true">URLの生成</button>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                    <div class="row mt-2">#}
+{#                                        <div class="col-md-12">#}
+{#                                            <input type="text" class="form-control"  id="url"  placeholder="URLのコピーはこちら"/>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{##}
+{#                                </div>#}
                             </div>
+
                         </div>
                         <!--END Pannel-->
                         <!--Preview Pannel-->
@@ -524,6 +537,9 @@
                 $('#generate_url').prop('disabled',false);
                 MAX_TOTAL_SIZE = response.remaining_space_in_mb;
                 $('#remaining_space').html(response.remaining_space);
+                $('#download_btn').prop('disabled',false);
+                $('#filename').html(response.name);
+
 
             });
 
@@ -576,6 +592,21 @@
             }
 
         });
+        $('#download_btn').click(function(){
+            var link = "{% url 'dashboard:get_files_as_zip' %}"+"?batch_id="+$('#batch_id').val();
+            window.location = link;
+        });
+        $('#del-submit').click(function(){
+            myDropzone.removeAllFiles(true);
+            $('#download_btn').prop('disabled',true);
+            $('#download_btn').removeAttr('href');
+            var progressElement = document.querySelector(".progress #progress-bar");
+            var progress = 0;
+            progressElement.style.width = progress + "%";
+            document.querySelector(".progress .progress-text").textContent = progress + "%";
+            $('#batch_id').val('');
+            $('#filename').html('');
+        })
         Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
         Chart.defaults.global.defaultFontColor = '#858796';
 

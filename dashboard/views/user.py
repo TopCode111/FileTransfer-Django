@@ -396,6 +396,7 @@ def delete_userreject(request):
 def upload_files(request):
     batch = Batch()
     batch.user = request.user
+    batch.name = "jumpcut-"+timezone.now().strftime('%Y%m%d%H%M%S')
     batch.save()
 
     for file in request.FILES:
@@ -407,8 +408,8 @@ def upload_files(request):
 
     remaining_space_in_mb = request.user.profile.remaining_space / 1000000
     remaining_space = request.user.profile.remaining_space
-
-    resp = HttpResponse(f'{{"message": "Uploaded successfully...", "id": "{batch.id}","remaining_space_in_mb": "{remaining_space_in_mb}","remaining_space": "{remaining_space}"}}')
+    filename = batch.name+'.zip'
+    resp = HttpResponse(f'{{"message": "Uploaded successfully...", "id": "{batch.id}","name": "{filename}","remaining_space_in_mb": "{remaining_space_in_mb}","remaining_space": "{remaining_space}"}}')
     resp.status_code = 200
     resp.content_type = "application/json"
     return resp
@@ -431,6 +432,9 @@ def get_files_as_zip(request):
     batch_id = request.GET.get('batch_id')
     batch = Batch.objects.get(id=batch_id)
     zip_filename = batch.name + '.zip'
+
+    # zipname = "jumpcut-"+timezone.now().strftime('%Y%m%d%H%M%S')
+    # zip_filename =zipname+'.zip'
 
     if "AWS_STORAGE_BUCKET_NAME" in os.environ:
         s3files =[]
