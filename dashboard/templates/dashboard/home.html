@@ -335,7 +335,9 @@
                         <div class="col-xl-6 col-lg-6">
                             <div class="card">
                                 <div class="card-body" id="uploadForm">
-                                    <h5 class="card-title">アップロード</h5>
+                                    <div class="card-title" style="display: flex;">
+                                        <h5 class="">アップロード</h5><button type="submit" id="del-submit" class="btn btn-primary dz-message" style="margin: 0 auto;" disabled="true">アップロード取り消し</button>
+                                    </div>
                                     <form action="{% url 'dashboard:upload_files' %}" class="dropzone form-group" id="my-awesome-dropzone">
                                         {% csrf_token %}
                                         <div class="drform-group dz-message">
@@ -494,6 +496,7 @@
                 // }
                 // currentFile = file;
                 $("#submit").prop('disabled', false);
+                $("#del-submit").prop('disabled', false);
                 totalsize += parseFloat((file.size / (1024*1024)).toFixed(2));
             });
             this.on("removedfile", function(file) {
@@ -534,6 +537,7 @@
             file.previewElement.remove();
             if (!this.files.length) {
                 $("#submit").prop('disabled', true);
+                $("#del-submit").prop('disabled', true);
             }
         },
         uploadprogress: function(file, progress, bytesSent) {
