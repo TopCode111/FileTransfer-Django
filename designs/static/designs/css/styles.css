@@ -17,6 +17,9 @@ h1, h2, h3, h4 {
   padding-left: 2rem;
   padding-right: 2rem;
 }
+#wrapper,.sidebar{
+  min-height: 80vh;
+}
 footer{
   background-color: #333333;
   color: #fff;
@@ -462,6 +465,9 @@ table thead th, table tbody td{
   padding: 7px 15px !important;
 }
 @media screen and (max-width: 1700px) {
+  #wrapper,.sidebar{
+    min-height: 81vh;
+  }
   .switch {
     width: 48.6979166667px;
     height: 22.1354166667px;
@@ -530,6 +536,7 @@ table thead th, table tbody td{
   }
 }
 @media screen and (max-width: 1280px) {
+  
   #content.container-fluid {
     min-height: 82.6vh;
   }

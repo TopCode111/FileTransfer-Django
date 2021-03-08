@@ -54,16 +54,23 @@
                             <thead class="card-header py-3">
                                 <th>No</th>
                                 <th>ールアドレス</th>
-                                <th>サイズ(byte)</th>
-                                <th style="text-align: right;">変更</th>
+                                <th>サイズ</th>
+                                <!--<th style="text-align: right;">変更</th>-->
                             </thead>
                             <tbody>
                                 {% for user in users %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ user.email }}</td>
-                                    <td><input type="number" class="filesize" value="{{ user.profile.file_size }}"></td>
-                                    <td style="text-align: right;"><button class="btn btn-primary updatefilesize" type="submit"><span class="icon text-blue-50"><i class="fa fa-edit"></i></span></button></td>
+                                    <td><select class="filesize" data-profile-id="{{ user.profile.id }}">
+                                            <option value="{{ user.profile.file_size }}" selected>{% widthratio user.profile.file_size 1048576 1 %}MB以下</option>
+                                            <option value="5242880">5MB以下</option>
+                                            <option value="10485760">10MB以下</option>
+                                            <option value="104857600">100MB以下</option>
+                                            <option value="1048576000">1024MB以下</option>
+                                        </select>
+                                    </td>
+                                    <!--<td style="text-align: right;"><button class="btn btn-primary updatefilesize" type="submit"><span class="icon text-blue-50"><i class="fa fa-edit"></i></span></button></td>-->
                                     <input type="hidden" class='profile_id' value="{{ user.profile.id }}">
                                 </tr>
                                 {% endfor %}
@@ -83,11 +90,14 @@
 {% block scripts %}
     <script>
         $(document).ready(function(){
-            $('#usertable').on('click','.updatefilesize',function(){
-                var currentRow = $(this).closest("tr");
-                var profile_id = currentRow.find(".profile_id").val();
-                var file_size = currentRow.find(".filesize").val();
+            $('#usertable').on('change','.filesize',function(){
+                //var currentRow = $(this).closest("tr");
+                //var profile_id = currentRow.find(".profile_id").val();
+                //var file_size = currentRow.find(".filesize").val();
                 
+                var profile_id = $(this).data('profile-id');
+                var file_size = $(this).val();
+
                 var csrftoken = "{{ csrf_token }}";
                 var r = confirm("ファイルサイズを変更しますか？");
                 if(r == true){
