@@ -44,7 +44,7 @@ from io import BytesIO
 import requests
 from django.views.decorators.csrf import csrf_exempt
 import stripe
-
+import urllib
 class DashboardView(auth_views.LoginView):
     template_name = "dashboard/home.html"
     form_class = ProfiledAuthenticationForm
@@ -447,6 +447,8 @@ def get_files_as_zip(request):
         for s3file in s3files:
             filename = s3file.split('/')[-1]
             response = requests.get(s3file)
+            filename = urllib.parse.quote(filename) 
+            response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
             zip_file.writestr(filename, response.content)
         zip_file.close()
     else:
