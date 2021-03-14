@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from dashboard.forms import UserCreateForm, ProfiledAuthenticationForm
 from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
