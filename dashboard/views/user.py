@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from dashboard.forms import UserCreateForm, ProfiledAuthenticationForm
 from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
@@ -44,6 +43,7 @@ from io import BytesIO
 import requests
 from django.views.decorators.csrf import csrf_exempt
 import stripe
+
 
 class DashboardView(auth_views.LoginView):
     template_name = "dashboard/home.html"
@@ -447,7 +447,7 @@ def get_files_as_zip(request):
         for s3file in s3files:
             filename = s3file.split('/')[-1]
             response = requests.get(s3file)
-            zip_file.writestr(filename, response.content)
+            zip_file.writestr(requests.utils.unquote(filename), response.content)
         zip_file.close()
     else:
         filenames = []
