@@ -17,7 +17,7 @@ from django.contrib.auth.forms import (
 
 class UserCreateForm(UserCreationForm):
     email = forms.EmailField(label="メールアドレス", required=True)
-    #first_name = forms.CharField(label='ユーザーネーム', required=True)
+    
     last_name = forms.CharField(label='ユーザーネーム', required=True)
     password1 = forms.CharField(label='パスワード', required=True, strip=False, widget=forms.PasswordInput())
     password2 = forms.CharField(label='パスワード確認', required=True, strip=False, widget=forms.PasswordInput())
