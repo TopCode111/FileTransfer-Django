@@ -182,8 +182,7 @@ SENDGRID_API_KEY=os.environ.get('SENDGRID_API_KEY')
 RESET_EMAIL_TEMPLATE_ID=''
 #EMAIL_HOST = "email-smtp.us-west-2.amazonaws.com"
 EMAIL_PORT = 587
-#EMAIL_HOST_USER = "AKIAU6V5ERXY5WHDA4FP"
-#EMAIL_HOST_PASSWORD = "BLn8mRInor8m4kAx+86Znvb7Krb0gOpmqfUBJ4pFcqm5"
+
 EMAIL_FROM = "hello@hello.io"
 NAME_FROM = "Hello"
 EMAIL_USE_TLS = True
